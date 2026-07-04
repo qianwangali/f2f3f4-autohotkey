@@ -25,6 +25,9 @@ F2::
     FocusYoudaoInput(winTitle)
 
     Send("^v")
+    Sleep(100)
+    Send("^a")   ; 选中输入框中所有文字
+  
 }
 
 ;===========================
@@ -83,6 +86,7 @@ FocusYoudaoInput(winTitle)
 
     CoordMode("Mouse", "Client")
     MouseClick("Left", 400, 220)
-    Sleep(100)
+    Sleep(50)
+ 
     return true
 }
