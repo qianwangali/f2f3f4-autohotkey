@@ -170,7 +170,7 @@ GetSelectedFiles()
 
 
 
-#Requires AutoHotkey v2.0
+
 
 !F8::
 {
@@ -178,13 +178,10 @@ GetSelectedFiles()
     if !folder
         folder := A_Desktop
 
-    defaultName := GetClipboardDefaultName()
-
     input := InputBox(
-        "请输入文件名：`n不输入则使用默认名称。`n按 Esc 取消。",
-        "新建文件",
-        "w420 h150",
-        defaultName
+        "请输入文本文件名：`n不输入则使用默认名称。`n按 Esc 取消。",
+        "新建文本文件",
+        "w360 h150"
     )
 
     if (input.Result = "Cancel")
@@ -195,10 +192,9 @@ GetSelectedFiles()
     if (name = "")
         file := GetNewTextFile(folder)
     else
-        file := BuildFilePath(folder, name)
+        file := BuildTextFilePath(folder, name)
 
     FileAppend("", file, "UTF-8")
-
     Run('"' "C:\Program Files\Notepad3\Notepad3.exe" '" "' file '"')
 }
 
@@ -231,33 +227,16 @@ GetNewTextFile(folder)
     return AvoidDuplicateFile(folder "\新建文本文档.txt")
 }
 
-BuildFilePath(folder, name)
+BuildTextFilePath(folder, name)
 {
     ; 替换 Windows 文件名非法字符
     name := RegExReplace(name, '[\\/:*?<>|"]', "_")
 
-    ; 用户输入什么文件名，就用什么文件名，不自动加扩展名
+    ; 如果用户没写扩展名，自动补 .txt
+    if !RegExMatch(name, '\.[^\\/:*?<>|"]+$')
+        name .= ".txt"
+
     return AvoidDuplicateFile(folder "\" name)
-}
-
-GetClipboardDefaultName()
-{
-    text := A_Clipboard
-
-    if (Trim(text) = "")
-        return ""
-
-    text := StrReplace(text, "`r", " ")
-    text := StrReplace(text, "`n", " ")
-    text := Trim(text)
-
-    if (StrLen(text) > 50)
-        text := SubStr(text, 1, 50)
-
-    ; 替换 Windows 文件名非法字符
-    text := RegExReplace(text, '[\\/:*?<>|"]', "_")
-
-    return text
 }
 
 AvoidDuplicateFile(file)
@@ -281,3 +260,8 @@ AvoidDuplicateFile(file)
         i++
     }
 }
+
+
+
+
+
